@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+	
+	<head>
+		<title>Конвертор валют</title>
+		<meta charset="UTF-8"/>
+
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+		
+		<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+		<link href="style.css" type="text/css" rel="stylesheet"/>
+	</head>
+
+	<body>
+		
+			<v-app id="main" 
+				dark
+				align-content-center
+			>
+				<h1 id="loading" v-if="request && !execption && !convertState">
+					Загрузка...
+				</h1>
+
+				<h1 id="loading_error" v-if="execption">
+					<div class="text-justify-center">
+					При загрузке возникла ошибка!
+					Попробуйте снова!</div>
+					<v-expansion-panel
+						:key="error_description"
+					>
+						<v-expansion-panel-content>
+							<template v-slot:header>
+								<div class="text-justify-center">Подробнее</div>
+							</template>
+							<v-card>
+								<v-card-text>{{descriptionError}}</v-card-text>
+							</v-card>
+						</v-expansion-panel-content>
+					</v-expansion-panel>
+				</h1>
+				<v-container v-if="!request">
+					<div class="text-xs-center">
+							<v-pagination
+								dark
+								v-model="currentPage"
+								:length="totalPage"
+							></v-pagination>
+					</div>
+					
+					<v-layout row wrap>
+						<v-flex xs12 id="valuteName">
+							<v-tabs
+								id="valuteTabs"
+								v-model="active"
+								color="#009688"
+								dark
+								centered
+								slider-color="#00C853"
+							>
+								<v-tab
+									v-for="n in dataCurrentPage"
+									:key="n.ID"
+									:id="n.ID"
+									ripple
+								>
+									{{n.Name}}
+								</v-tab>
+								
+								<v-tab-item
+									v-for="n in dataCurrentPage"
+									:key="n.ID"
+								>
+									<div class="text-justify-center">
+									<v-card flat>
+										<v-card-text id="valuteContent">
+										<v-text-field
+											disabled
+											:placeholder="n.Name"
+										>
+											{{n.Name}}
+										</v-text-field>
+											<v-text-field
+												:label="n.CharCode"
+												placeholder="n.Nominal"
+												v-model="currentValute"
+											></v-text-field>
+											<button
+												block
+												id="ConvertBtn"
+												color="success"
+												@click="convert(n.Value)"
+											>
+												<v-icon>compare_arrows</v-icon>
+											</button>
+											
+											<v-text-field
+												placeholder="Российский рубль"
+												disabled
+											></v-text-field>
+											<v-text-field
+												disabled
+												label="RUB"
+												v-model="currentRub"
+												></v-text-field>
+										</v-card-text>
+									</v-card>
+									</div>
+								</v-tab-item>
+								
+							</v-tabs>
+						</v-flex>
+					</v-layout>
+				</v-container>
+			</v-app>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+		<script src="main.js"></script>
+	</body>
+	
+	
+</html>
